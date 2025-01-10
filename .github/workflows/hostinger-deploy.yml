@@ -43,7 +43,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd domains/api.gradacar.com
+            cd domains/${{ vars.WEBSITE_FOLDER }}
             git checkout main
             git pull
             composer install
