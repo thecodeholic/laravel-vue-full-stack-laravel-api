@@ -13,7 +13,7 @@ class ImageController extends Controller
      */
     public function index()
     {
-        return Image::orderBy('created_at', 'desc')
+        return Image::latest()
             ->get()
             ->map(function ($image) {
                 return [
@@ -30,18 +30,18 @@ class ImageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'photo' => ['required', 'image', 'max:2048'],
+            'image' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg'],
             'label' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $path = $request->file('photo')->store('images', 'public');
+        $path = $request->file('image')->store('images', 'public');
 
         $image = Image::create([
             'path' => $path,
-            'label' => $request->label,
+            'label' => $request->label
         ]);
 
-        return response()->json($image, 201);
+        return response($image, 201);
     }
 
     /**
@@ -51,6 +51,6 @@ class ImageController extends Controller
     {
         $image->delete();
 
-        return response()->json(null, 204);
+        return response(null, 204);
     }
 }
